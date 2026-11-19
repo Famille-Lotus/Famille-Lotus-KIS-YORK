@@ -1,8 +1,149 @@
 <!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kis York — Candidat</title><style>body{margin:0;background:#071c2e;color:white;font:18px/1.6 system-ui}main{max-width:700px;margin:auto;padding:24px}h1{font-size:2.4rem}section{border:1px solid #b8c9d6;border-radius:18px;padding:20px;margin:20px 0}input,button,audio{max-width:100%;font:inherit}button{padding:12px;min-height:44px;cursor:pointer}input:focus-visible,button:focus-visible,audio:focus-visible{outline:3px solid white;outline-offset:5px}.status{min-height:2em}small{display:block}body.large{font-size:24px}body.large h1{font-size:3rem}body.contrast{background:#000;color:#fff}body.contrast section{border:2px solid #fff}label{display:block}input[type=checkbox]{width:24px;height:24px;vertical-align:middle;margin:12px}section,p,h1,h2{overflow-wrap:anywhere}*{box-sizing:border-box}main{max-width:760px;padding-bottom:48px}h1{margin-bottom:0}section,details.settings{background:#0c2032;border:1px solid #506779;border-radius:24px;padding:24px;margin:20px 0}.recognize{text-align:center;padding-block:36px}.recognize h2{font-size:clamp(1.5rem,5vw,2.1rem)}button.identify{display:block;width:240px;max-width:100%;aspect-ratio:1;border-radius:50%;margin:24px auto;background:#233d50;color:#fff;border:2px solid #a6bdcc;font-weight:700;font-size:1.4rem;box-shadow:0 0 40px #47718933}button.identify:disabled{opacity:.7;cursor:wait}summary{cursor:pointer;min-height:48px;font-weight:700}summary:focus-visible{outline:3px solid white;outline-offset:4px}.settings input[type=password]{width:100%;padding:12px;background:#061522;color:white;border:1px solid #b8c9d6;border-radius:10px}#recent-list{padding-left:24px}#recent-list li{padding:12px 0;border-bottom:1px solid #506779}body.contrast section,body.contrast details.settings{background:#000;border:2px solid white}body.contrast .identify{background:#000;color:white;border-color:white}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}@media(max-width:420px){main{padding:16px}section,details.settings{padding:18px}.identify{width:210px}}
-</style></head><body><main><h1>Kis York</h1><p>Mes racines, mon horizon, ma musique.</p><p>Version d’essai privé — reconnaissance musicale et lecture audio locale.</p><section class="recognize" aria-labelledby="recognize-title"><h2 id="recognize-title">Touchez pour reconnaître</h2><button id="identify" class="identify" type="button" aria-describedby="recognition-notice">Reconnaître<br>la musique</button><p id="recognition-status" role="status" aria-live="polite">Identification réelle encore à vérifier.</p><p id="recognition-notice">Après votre autorisation, dix secondes du microphone sont envoyées à AudD pour rechercher le titre et l’artiste.</p></section><details class="settings"><summary>Réglages et accessibilité</summary><label for="access-code">Code privé CLIENT_TOKEN (pas la clé AudD)</label><input id="access-code" type="password" autocomplete="off" spellcheck="false" autocapitalize="none"><p>Code conservé uniquement dans ce champ. Ne partagez pas votre clé AudD. La dernière tentative a été refusée par AudD ; la cause reste à vérifier.</p><h2 id="access-title">Vision et audition</h2><label><input id="large" type="checkbox">Agrandir les textes</label><label><input id="contrast" type="checkbox">Contraste renforcé</label><p>Les commandes et messages sont écrits. Pas de transcription ni de sous-titrage dans ce candidat. Réglages actifs jusqu’au rechargement.</p></details><section aria-labelledby="recent-title"><h2 id="recent-title">Morceaux récents</h2><p id="recent-empty">Aucun morceau identifié dans cette session.</p><ul id="recent-list"></ul><small>Seuls les résultats reçus sont affichés. Cet historique disparaît au rechargement.</small></section><section aria-labelledby="listen"><h2 id="listen">Écouter un fichier</h2><label for="file">Choisir un fichier audio sur cet appareil</label><input id="file" type="file" accept="audio/*"><p id="status" class="status" role="status" aria-live="polite">Aucun fichier sélectionné.</p><audio id="player" controls preload="metadata" aria-label="Lecteur du fichier sélectionné"></audio><p><button id="clear" type="button">Retirer le fichier</button></p><small>Le fichier reste dans cette page : aucun envoi à un service externe. Le navigateur doit prendre en charge son format. Les contrôles permettent lecture, pause et déplacement dans le fichier.</small></section><section><h2>État du développement</h2><p>Reconnaissance musicale : bouton raccordé au serveur Kis York pour un essai privé avec votre code CLIENT_TOKEN. Le serveur répond dans Safari ; la clé AudD et l’identification réelle restent à tester. Aucune recherche de paroles n’est effectuée.</p><p>Les options précédemment validées doivent être inventoriées et attribuées à la bonne application ; 300 options ne sont pas déclarées implémentées dans ce candidat.</p><p>Le pictogramme blanc « Racines et envol » validé reste la référence visuelle à intégrer.</p></section></main><script>
+</style></head><body><main><h1>Kis York</h1><p>Mes racines, mon horizon, ma musique.</p><p>Version d’essai privé — reconnaissance musicale et lecture audio locale.</p><section class="recognize" aria-labelledby="recognize-title"><h2 id="recognize-title">Touchez pour reconnaître</h2><button id="identify" class="identify" type="button" aria-describedby="recognition-notice">Reconnaître<br>la musique</button><button id="cancel-recognition" type="button" hidden>Annuler la reconnaissance</button><p id="recognition-status" role="status" aria-live="polite">Identification réelle encore à vérifier.</p><p id="recognition-notice">Après votre autorisation, dix secondes du microphone sont envoyées à AudD pour rechercher le titre et l’artiste.</p></section><details class="settings"><summary>Réglages et accessibilité</summary><label for="access-code">Code privé CLIENT_TOKEN (pas la clé AudD)</label><input id="access-code" type="password" autocomplete="off" spellcheck="false" autocapitalize="none"><p>Code conservé uniquement dans ce champ. Ne partagez pas votre clé AudD. La dernière tentative a été refusée par AudD ; la cause reste à vérifier.</p><h2 id="access-title">Vision et audition</h2><label><input id="large" type="checkbox">Agrandir les textes</label><label><input id="contrast" type="checkbox">Contraste renforcé</label><p>Les commandes et messages sont écrits. Pas de transcription ni de sous-titrage dans ce candidat. Réglages actifs jusqu’au rechargement.</p></details><section aria-labelledby="recent-title"><h2 id="recent-title">Morceaux récents</h2><p id="recent-empty">Aucun morceau identifié dans cette session.</p><ul id="recent-list"></ul><small>Seuls les résultats reçus sont affichés. Cet historique disparaît au rechargement.</small></section><section aria-labelledby="listen"><h2 id="listen">Écouter un fichier</h2><label for="file">Choisir un fichier audio sur cet appareil</label><input id="file" type="file" accept="audio/*"><p id="status" class="status" role="status" aria-live="polite">Aucun fichier sélectionné.</p><audio id="player" controls preload="metadata" aria-label="Lecteur du fichier sélectionné"></audio><p><button id="clear" type="button">Retirer le fichier</button></p><small>Le fichier reste dans cette page : aucun envoi à un service externe. Le navigateur doit prendre en charge son format. Les contrôles permettent lecture, pause et déplacement dans le fichier.</small></section><section><h2>État du développement</h2><p>Reconnaissance musicale : bouton raccordé au serveur Kis York pour un essai privé avec votre code CLIENT_TOKEN. Le serveur répond dans Safari ; la clé AudD et l’identification réelle restent à tester. Aucune recherche de paroles n’est effectuée.</p><p>Les options précédemment validées doivent être inventoriées et attribuées à la bonne application ; 300 options ne sont pas déclarées implémentées dans ce candidat.</p><p>Le pictogramme blanc « Racines et envol » validé reste la référence visuelle à intégrer.</p></section></main><script>
 (()=>{'use strict';const file=document.getElementById('file'),player=document.getElementById('player'),status=document.getElementById('status');let url=null;for(const id of ['large','contrast'])document.getElementById(id).addEventListener('change',e=>document.body.classList.toggle(id,e.target.checked));function release(){player.pause();player.removeAttribute('src');player.load();if(url){URL.revokeObjectURL(url);url=null}}file.addEventListener('change',()=>{const selected=file.files[0];if(!selected)return;release();if(!selected.type.startsWith('audio/')){status.textContent='Format non identifié comme audio. Choisissez un fichier audio compatible.';file.value='';return}if(selected.size>100*1024*1024){status.textContent='Fichier trop volumineux : limite de 100 Mo.';file.value='';return}url=URL.createObjectURL(selected);player.src=url;status.textContent='Fichier prêt : '+selected.name+'. Touchez Lecture pour écouter.'});player.addEventListener('error',()=>{status.textContent='Lecture impossible : format non pris en charge ou fichier endommagé.'});document.getElementById('clear').addEventListener('click',()=>{release();file.value='';status.textContent='Fichier retiré.'});window.addEventListener('pagehide',release);
 })();
 </script><script>
-(()=>{const button=document.getElementById('identify'),message=document.getElementById('recognition-status');button.addEventListener('click',async()=>{const token=document.getElementById('access-code').value.trim();if(!token){message.textContent='Ouvrez Réglages et saisissez votre code privé CLIENT_TOKEN.';document.querySelector('details.settings').open=true;document.getElementById('access-code').focus();return}if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){message.textContent='Capture microphone indisponible sur ce navigateur.';return}let stream,timer;button.disabled=true;try{stream=await navigator.mediaDevices.getUserMedia({audio:true});const recorder=new MediaRecorder(stream),chunks=[];message.textContent='Écoute pendant dix secondes…';const blob=await new Promise((resolve,reject)=>{recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};recorder.onerror=()=>reject(Error('Enregistrement impossible'));recorder.onstop=()=>resolve(new Blob(chunks,{type:recorder.mimeType}));recorder.start();timer=setTimeout(()=>{if(recorder.state!=='inactive')recorder.stop()},10000)});stream.getTracks().forEach(t=>t.stop());if(!blob.size)throw Error('Aucun son enregistré');message.textContent='Recherche du morceau…';const form=new FormData();form.set('file',blob,'extrait');const response=await fetch('https://kisyork.dethierhelene.workers.dev/',{method:'POST',headers:{Authorization:'Bearer '+token},body:form,signal:AbortSignal.timeout(25000)});const data=await response.json();if(!response.ok)throw Error(data.error||'Service indisponible');message.textContent=data.match?data.title+' — '+data.artist:'Aucun morceau identifié. Réessayez avec une musique plus audible.';if(data.match){document.getElementById('recent-empty').hidden=true;const item=document.createElement('li');item.textContent=data.title+' — '+data.artist;const list=document.getElementById('recent-list');list.prepend(item);while(list.children.length>20)list.lastElementChild.remove()}}catch(e){message.textContent='Reconnaissance impossible : '+e.message}finally{clearTimeout(timer);stream?.getTracks().forEach(t=>t.stop());button.disabled=false}})})();
+(() => {
+  'use strict';
+  const button = document.getElementById('identify');
+  const cancelButton = document.getElementById('cancel-recognition');
+  const message = document.getElementById('recognition-status');
+  let active = null;
+
+  function stopTracks(session) {
+    if (session.stream) session.stream.getTracks().forEach(track => track.stop());
+    session.stream = null;
+  }
+
+  function finish(session) {
+    session.timers.forEach(clearTimeout);
+    session.timers = [];
+    session.controller.abort();
+    if (session.recorder && session.recorder.state !== 'inactive') {
+      try { session.recorder.stop(); } catch (_) { /* Tracks are stopped below. */ }
+    }
+    stopTracks(session);
+    if (active === session) {
+      active = null;
+      button.disabled = false;
+      cancelButton.hidden = true;
+    }
+  }
+
+  function cancel(text) {
+    if (!active) return;
+    const session = active;
+    session.cancelled = true;
+    session.rejectCancel(new Error('Annulation'));
+    message.textContent = text;
+    finish(session);
+  }
+
+  cancelButton.addEventListener('click', () => cancel('Reconnaissance annulée.'));
+  window.addEventListener('pagehide', () => cancel('Reconnaissance interrompue à la fermeture de la page.'));
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) cancel('Reconnaissance interrompue : la page est passée en arrière-plan.');
+  });
+
+  button.addEventListener('click', async () => {
+    if (active) return;
+    const token = document.getElementById('access-code').value.trim();
+    if (!token) {
+      message.textContent = 'Ouvrez Réglages et saisissez votre code privé CLIENT_TOKEN.';
+      document.querySelector('details.settings').open = true;
+      document.getElementById('access-code').focus();
+      return;
+    }
+    if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder || !window.AbortController) {
+      message.textContent = 'Capture microphone indisponible sur ce navigateur.';
+      return;
+    }
+    const session = {cancelled: false, stream: null, recorder: null, timers: [], controller: new AbortController()};
+    session.cancellation = new Promise((_, reject) => { session.rejectCancel = reject; });
+    // This promise may settle after cancellation; always stop any late stream.
+    const permission = Promise.resolve().then(() => navigator.mediaDevices.getUserMedia({audio: true})).then(stream => {
+      if (session.cancelled || active !== session) {
+        stream.getTracks().forEach(track => track.stop());
+        throw new Error('Annulation');
+      }
+      session.stream = stream;
+      return stream;
+    });
+    function race(promise) { return Promise.race([promise, session.cancellation]); }
+    function deadline(delay, text) {
+      session.timers.push(setTimeout(() => {
+        if (active !== session) return;
+        session.cancelled = true;
+        message.textContent = text;
+        session.rejectCancel(new Error('Délai dépassé'));
+        finish(session);
+      }, delay));
+    }
+    active = session;
+    button.disabled = true;
+    cancelButton.hidden = false;
+    message.textContent = 'Autorisez le microphone pour commencer. Vous pouvez annuler.';
+    try {
+      deadline(30000, 'Autorisation du microphone non obtenue à temps. Réessayez.');
+      const stream = await race(permission);
+      session.timers.forEach(clearTimeout);
+      session.timers = [];
+      const recorder = new MediaRecorder(stream);
+      session.recorder = recorder;
+      const chunks = [];
+      const recording = new Promise((resolve, reject) => {
+        recorder.ondataavailable = event => { if (event.data.size) chunks.push(event.data); };
+        recorder.onerror = () => reject(new Error('Enregistrement impossible'));
+        recorder.onstop = () => resolve(new Blob(chunks, {type: recorder.mimeType}));
+        recorder.start();
+      });
+      message.textContent = 'Écoute pendant dix secondes…';
+      session.timers.push(setTimeout(() => {
+        if (active !== session) return;
+        try { if (recorder.state !== 'inactive') recorder.stop(); }
+        catch (_) { session.rejectCancel(new Error('Arrêt de l’enregistrement impossible')); }
+        finally { stopTracks(session); }
+      }, 10000));
+      deadline(12000, 'L’enregistrement ne s’est pas terminé. Microphone arrêté.');
+      const blob = await race(recording);
+      stopTracks(session);
+      session.timers.forEach(clearTimeout);
+      session.timers = [];
+      if (!blob.size) throw new Error('Aucun son enregistré');
+      if (blob.size > 5 * 1024 * 1024) throw new Error('Extrait trop volumineux : maximum 5 Mo');
+      if (!blob.type.startsWith('audio/')) throw new Error('Format audio non pris en charge');
+      message.textContent = 'Recherche du morceau…';
+      const form = new FormData();
+      form.set('file', blob, 'extrait');
+      deadline(25000, 'La recherche a dépassé le délai. Réessayez plus tard.');
+      const response = await race(fetch('https://kisyork.dethierhelene.workers.dev/', {
+        method: 'POST', headers: {Authorization: 'Bearer ' + token}, body: form,
+        signal: session.controller.signal
+      }));
+      const data = await race(response.json());
+      if (active !== session || session.cancelled) return;
+      if (!response.ok) throw new Error(data.error || 'Service indisponible');
+      message.textContent = data.match ? data.title + ' — ' + data.artist : 'Aucun morceau identifié. Réessayez avec une musique plus audible.';
+      if (data.match) {
+        document.getElementById('recent-empty').hidden = true;
+        const item = document.createElement('li');
+        item.textContent = data.title + ' — ' + data.artist;
+        const list = document.getElementById('recent-list');
+        list.prepend(item);
+        while (list.children.length > 20) list.lastElementChild.remove();
+      }
+    } catch (error) {
+      if (active === session && !session.cancelled) {
+        message.textContent = error?.name === 'NotAllowedError'
+          ? 'Microphone non autorisé. Vérifiez les permissions Safari.'
+          : 'Reconnaissance impossible : ' + (error?.message || 'Erreur inconnue');
+      }
+    } finally {
+      session.cancelled = true;
+      finish(session);
+    }
+  });
+})();
+
 </script></body></html>
