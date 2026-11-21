@@ -1,6 +1,20 @@
 <!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kis York — Candidat</title><style>body{margin:0;background:#071c2e;color:white;font:18px/1.6 system-ui}main{max-width:700px;margin:auto;padding:24px}h1{font-size:2.4rem}section{border:1px solid #b8c9d6;border-radius:18px;padding:20px;margin:20px 0}input,button,audio{max-width:100%;font:inherit}button{padding:12px;min-height:44px;cursor:pointer}input:focus-visible,button:focus-visible,audio:focus-visible{outline:3px solid white;outline-offset:5px}.status{min-height:2em}small{display:block}body.large{font-size:24px}body.large h1{font-size:3rem}body.contrast{background:#000;color:#fff}body.contrast section{border:2px solid #fff}label{display:block}input[type=checkbox]{width:24px;height:24px;vertical-align:middle;margin:12px}section,p,h1,h2{overflow-wrap:anywhere}*{box-sizing:border-box}main{max-width:760px;padding-bottom:48px}h1{margin-bottom:0}section,details.settings{background:#0c2032;border:1px solid #506779;border-radius:24px;padding:24px;margin:20px 0}.recognize{text-align:center;padding-block:36px}.recognize h2{font-size:clamp(1.5rem,5vw,2.1rem)}button.identify{display:block;width:240px;max-width:100%;aspect-ratio:1;border-radius:50%;margin:24px auto;background:#233d50;color:#fff;border:2px solid #a6bdcc;font-weight:700;font-size:1.4rem;box-shadow:0 0 40px #47718933}button.identify:disabled{opacity:.7;cursor:wait}summary{cursor:pointer;min-height:48px;font-weight:700}summary:focus-visible{outline:3px solid white;outline-offset:4px}.settings input[type=password]{width:100%;padding:12px;background:#061522;color:white;border:1px solid #b8c9d6;border-radius:10px}#recent-list{padding-left:24px}#recent-list li{padding:12px 0;border-bottom:1px solid #506779}body.contrast section,body.contrast details.settings{background:#000;border:2px solid white}body.contrast .identify{background:#000;color:white;border-color:white}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}@media(max-width:420px){main{padding:16px}section,details.settings{padding:18px}.identify{width:210px}}
-.apple-music{display:inline-block;margin:.5rem;color:inherit;text-decoration:underline}</style><meta name="apple-music-developer-token" content=""><script>
+.apple-music{display:inline-block;margin:.5rem;color:inherit;text-decoration:underline}
+/* Palette de l’application */
+
+body:not(.contrast) { background:#f6ebe0; color:#43291f; }
+body:not(.contrast) h1, body:not(.contrast) h2 { color:#633e2e; }
+body:not(.contrast) section, body:not(.contrast) details.settings { background:#fff8f0; border-color:#b0836c; }
+body:not(.contrast) button { background:#efd0bd; color:#2e1c13; border:1px solid #e5a87b; border-radius:10px; }
+body:not(.contrast) button.identify { background:#eac2ad; color:#43291f; border:2px solid #633e2e; border-radius:50%; box-shadow:0 0 40px #a95f3833; }
+body:not(.contrast) .settings input[type=password] { background:#3e2d25; border-color:#dfad8c; }
+body:not(.contrast) #recent-list li { border-color:#b0836c; }
+a:focus-visible { outline:3px solid white; outline-offset:3px; }
+
+
+body:not(.contrast) :focus-visible {outline-color:#744531;}
+</style><meta name="apple-music-developer-token" content=""><script>
 async function addToKisYork(request, track) {
   const normalize = value => value.trim().normalize('NFC').toLocaleLowerCase();
   const { data: [storefront] } = await request('/v1/me/storefront');
