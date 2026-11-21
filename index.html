@@ -43,7 +43,7 @@
       add.type = 'button';
       add.textContent = 'Ajouter à ma playlist';
       add.setAttribute('aria-label', 'Ajouter « ' + item.title + ' » à ma playlist');
-      add.addEventListener('click', () => window.kisYorkAddTrack(item));
+      add.addEventListener('click', () => window.kisYorkAddTrack(item, add));
       row.append(add);
       list.append(row);
     });
@@ -71,20 +71,28 @@
       return row;
     }));
   }
-  window.kisYorkAddTrack = data => {
+  window.kisYorkAddTrack = (data, button) => {
+    function report(label, message) {
+      playlistStatus.textContent = message;
+      if (button) {
+        button.textContent = label;
+        button.setAttribute('aria-label', label + ' — ' + data.title);
+      }
+    }
     try {
       const track = clean(data);
       const tracks = readPlaylist();
       if (tracks.some(saved => saved.title === track.title && saved.artist === track.artist)) {
-        playlistStatus.textContent = 'Ce morceau est déjà dans votre playlist.';
+        renderPlaylist(tracks);
+        report('Déjà dans ma playlist', 'Ce morceau est déjà dans votre playlist.');
         return;
       }
       tracks.push(track);
       localStorage.setItem(playlistKey, JSON.stringify(tracks));
       renderPlaylist(tracks);
-      playlistStatus.textContent = 'Morceau ajouté à votre playlist Kis York.';
+      report('Ajouté à ma playlist', 'Morceau ajouté à votre playlist Kis York.');
     } catch (_) {
-      playlistStatus.textContent = 'La playlist locale est indisponible.';
+      report('Échec de l’ajout · Réessayer', 'La playlist locale est indisponible.');
     }
   };
   try { renderPlaylist(readPlaylist()); }
@@ -242,7 +250,7 @@
         const add = document.createElement('button');
         add.type = 'button';
         add.textContent = 'Ajouter à ma playlist';
-        add.addEventListener('click', () => window.kisYorkAddTrack(data));
+        add.addEventListener('click', () => window.kisYorkAddTrack(data, add));
         message.append(document.createTextNode(' '), add);
       }
     } catch (error) {
