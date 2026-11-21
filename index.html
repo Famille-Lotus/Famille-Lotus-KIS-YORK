@@ -33,17 +33,21 @@ async function addToKisYork(request, track) {
 
 const token = globalThis.document?.querySelector('meta[name="apple-music-developer-token"]')?.content;
 let music;
+let musicLoadError = '';
 if (token) {
   document.addEventListener('musickitloaded', async () => {
     try {
       await MusicKit.configure({ developerToken: token, app: { name: 'Kis York', build: '1.0' } });
       music = MusicKit.getInstance();
     } catch (error) {
-      console.error('Configuration MusicKit indisponible', error);
+      musicLoadError = 'Configuration Apple Music refusée. Vérifiez le jeton développeur MusicKit.';
     }
   });
   const script = document.createElement('script');
   script.src = 'https://js-cdn.music.apple.com/musickit/v3/musickit.js';
+  script.addEventListener('error', () => {
+    musicLoadError = 'Le script Apple Music ne se charge pas. Vérifiez la connexion et rechargez la page.';
+  });
   document.head.append(script);
 }
 
@@ -54,7 +58,7 @@ if (globalThis.window) window.kisYorkAddToAppleMusic = async (track, status) => 
     return;
   }
   if (!music) {
-    status.textContent = 'La connexion Apple Music doit être configurée ou est encore en cours de chargement.';
+    status.textContent = musicLoadError || 'Apple Music est en cours de chargement. Réessayez dans quelques secondes.';
     return;
   }
   if (adding) {
