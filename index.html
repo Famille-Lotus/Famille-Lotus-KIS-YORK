@@ -198,7 +198,7 @@ header.fl-defis-header>div{min-width:0}
 <label for="kis-note">Ce qui les relie pour moi</label><textarea id="kis-note" required maxlength="2000" rows="3"></textarea>
 <button type="submit">Enregistrer mon souvenir</button>
 </form>
-<p id="kis-feedback" role="status"></p><ul id="kis-bridges" aria-label="Mes souvenirs entre deux villes"></ul>
+<p id="kis-feedback" role="status"></p><label for="kis-search">Rechercher un morceau ou des mots du souvenir</label><input type="search" id="kis-search"><p id="kis-matches" role="status"></p><ul id="kis-bridges" aria-label="Mes souvenirs entre deux villes"></ul>
 </section>
 <script>
 (() => {
@@ -206,6 +206,9 @@ header.fl-defis-header>div{min-width:0}
   const form = document.getElementById('kis-bridge');
   const status = document.getElementById('kis-feedback');
   const list = document.getElementById('kis-bridges');
+  const search=document.getElementById('kis-search');
+  const normalize=value=>value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('fr');
+  search.addEventListener('input',load);
   function refresh() {
     const entries = Object.keys(localStorage).filter(key => key.startsWith(prefix)).sort().reverse();
     list.replaceChildren();
@@ -213,6 +216,7 @@ header.fl-defis-header>div{min-width:0}
       let record;
       try { record = JSON.parse(localStorage.getItem(key)); } catch { continue; }
       if (!Array.isArray(record) || record.length !== 3 || !record.every(value => typeof value === 'string')) continue;
+      if (!normalize(record.join(' ')).includes(normalize(search.value.trim()))) continue;
       const item = document.createElement('li');
       const title = document.createElement('strong');
       const note = document.createElement('p');
@@ -221,6 +225,7 @@ header.fl-defis-header>div{min-width:0}
       item.append(title, note);
       list.append(item);
     }
+    document.getElementById('kis-matches').textContent=search.value.trim()?list.children.length+' souvenir(s) trouvé(s).':'';
   }
   function load() {
     try { refresh(); } catch { status.textContent = 'Le carnet local est indisponible sur cet appareil.'; }
